@@ -1,11 +1,13 @@
+import ReactQueryProvider from "@/providers/react-query.provider";
+
 import { Outlet } from "react-router";
 import { Toaster } from "@/components/ui/sonner";
 
 export default function RootLayout() {
     return (
-        <div>
+        <ReactQueryProvider>
             <Outlet />
             <Toaster />
-        </div>
+        </ReactQueryProvider>
     );
 }

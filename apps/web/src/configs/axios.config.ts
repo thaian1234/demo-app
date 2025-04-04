@@ -4,14 +4,12 @@ import axios, {
     HttpStatusCode,
     InternalAxiosRequestConfig,
 } from "axios";
-// import Cookies from "js-cookie";
 
 // import AuthService from "@/features/auth/apis/service";
 
-// const COOKIES_STORAGE = {
-//     ACCESS_TOKEN: "access_token",
-//     REFRESH_TOKEN: "refresh_token",
-// } as const;
+const LOCAL_STORAGE = {
+    ACCESS_TOKEN: "access_token",
+} as const;
 
 export const client = (() => {
     return axios.create({
@@ -27,6 +25,10 @@ export const client = (() => {
 
 client.interceptors.request.use(
     (config: InternalAxiosRequestConfig) => {
+        const accessToken = localStorage.getItem(LOCAL_STORAGE.ACCESS_TOKEN);
+        if (accessToken) {
+            config.headers["Authorization"] = `Bearer ${accessToken}`;
+        }
         config.headers["Content-Type"] = "application/json";
         return config;
     },
@@ -39,7 +41,7 @@ let retryCount = 0;
 
 client.interceptors.response.use(
     (res: AxiosResponse) => {
-        return res; // Simply return the response
+        return res;
     },
     async err => {
         const originalConfig = err.config;
@@ -48,7 +50,12 @@ client.interceptors.response.use(
         if (status === HttpStatusCode.Unauthorized && retryCount < 3) {
             retryCount++;
             try {
+                const accessToken = "";
+                // const accessTokenFromStorage = localStorage.getItem(LOCAL_STORAGE.ACCESS_TOKEN);
+                // TODO: Refresh token here
+                // localStorage.setItem(LOCAL_STORAGE.ACCESS_TOKEN, accessTokenFromStorage);
                 // await AuthService.refresh();
+                client.defaults.headers.common.Authorization = `Bearer ${accessToken}`;
                 return await client(originalConfig);
             } catch (error) {
                 return Promise.reject(error);
