@@ -30,6 +30,7 @@ export default tseslint.config(
             '@typescript-eslint/no-explicit-any': 'off',
             '@typescript-eslint/no-floating-promises': 'warn',
             '@typescript-eslint/no-unsafe-argument': 'warn',
+            '@typescript-eslint/no-unsafe-call': 'off',
             'prettier/prettier': [
                 'error',
                 {
@@ -38,7 +39,7 @@ export default tseslint.config(
                     singleQuote: true,
                     printWidth: 100,
                     tabWidth: 4,
-                    endOfLine: 'lf',
+                    endOfLine: 'crlf',
                 },
             ],
         },
