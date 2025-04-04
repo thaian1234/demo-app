@@ -38,10 +38,12 @@ export class ResponseInterceptor<T> implements NestInterceptor<T, Response<T>> {
                 ? exception.getStatus()
                 : HttpStatus.INTERNAL_SERVER_ERROR;
 
+        const message = status === 500 ? 'Internal Server Error' : exception.message;
+
         response.status(status).json({
-            status: false,
+            success: false,
             statusCode: status,
-            message: exception.message,
+            message: message,
         });
     }
 
