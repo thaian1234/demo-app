@@ -25,6 +25,12 @@ export class AuthController {
         return this.authService.signIn(signInDto);
     }
 
+    @Post('signout')
+    @ResponseMessage(authConstants.success.logoutSuccess)
+    signout(@Req() req: Request & { user: Omit<User, 'password'> }) {
+        return this.authService.signOut(req.user.id, req.user.email);
+    }
+
     @UseGuards(JwtAuthGuard)
     @Get('profile')
     getProfile(@Req() req: Request & { user: Omit<User, 'password'> }) {

@@ -9,6 +9,8 @@ import { SignInDto } from './dto/sign-in.dto';
 
 @Injectable()
 export class AuthService {
+    private tokenBlacklist: Set<string> = new Set();
+
     constructor(
         private readonly prisma: PrismaService,
         private readonly jwtService: JwtService,
@@ -80,7 +82,7 @@ export class AuthService {
         };
     }
 
-    async signOut(userId: string) {
+    async signOut(userId: string, token: string) {
         const user = await this.prisma.user.findUnique({
             where: { id: userId },
         });
@@ -88,14 +90,17 @@ export class AuthService {
         if (!user) {
             throw new BadRequestException(authConstants.error.userNotFound);
         }
+        this.tokenBlacklist.add(token);
 
-        return {
-            message: authConstants.success.logoutSuccess,
-        };
+        return;
     }
 
     async generateToken(jwtPayload: JwtPayload) {
         const accessToken = await this.jwtService.signAsync(jwtPayload);
         return accessToken;
+    }
+
+    public isTokenBlacklisted(token: string): boolean {
+        return this.tokenBlacklist.has(token);
     }
 }
