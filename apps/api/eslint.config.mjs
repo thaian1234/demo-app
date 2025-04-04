@@ -39,7 +39,7 @@ export default tseslint.config(
                 {
                     semi: true,
                     trailingComma: 'all',
-                    singleQuote: true,
+                    singleQuote: false,
                     printWidth: 100,
                     tabWidth: 4,
                     endOfLine: 'crlf',

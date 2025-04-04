@@ -5,11 +5,11 @@ import {
     CallHandler,
     HttpException,
     HttpStatus,
-} from '@nestjs/common';
-import { Reflector } from '@nestjs/core';
-import { Observable, throwError } from 'rxjs';
-import { catchError, map } from 'rxjs/operators';
-import { RESPONSE_MESSAGE_METADATA } from '../decorators/response-message.decorator';
+} from "@nestjs/common";
+import { Reflector } from "@nestjs/core";
+import { Observable, throwError } from "rxjs";
+import { catchError, map } from "rxjs/operators";
+import { RESPONSE_MESSAGE_METADATA } from "../decorators/response-message.decorator";
 
 export type Response<T> = {
     success: boolean;
@@ -38,7 +38,7 @@ export class ResponseInterceptor<T> implements NestInterceptor<T, Response<T>> {
                 ? exception.getStatus()
                 : HttpStatus.INTERNAL_SERVER_ERROR;
 
-        const message = status === 500 ? 'Internal Server Error' : exception.message;
+        const message = status === 500 ? "Internal Server Error" : exception.message;
 
         response.status(status).json({
             success: false,
@@ -54,7 +54,7 @@ export class ResponseInterceptor<T> implements NestInterceptor<T, Response<T>> {
 
         const message =
             this.reflector.get<string>(RESPONSE_MESSAGE_METADATA, context.getHandler()) ||
-            'Success';
+            "Success";
 
         return {
             success: true,
