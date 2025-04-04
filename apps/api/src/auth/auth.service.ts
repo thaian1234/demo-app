@@ -16,7 +16,7 @@ export class AuthService {
         private readonly jwtService: JwtService,
     ) {}
 
-    async validateUser(email: string, password: string): Promise<any> {
+    async validateUser(email: string, password: string) {
         const user = await this.prisma.user.findUnique({
             where: {
                 email: email,
@@ -59,7 +59,6 @@ export class AuthService {
         });
 
         return {
-            message: authConstants.success.userCreated,
             accessToken,
         };
     }
@@ -78,8 +77,8 @@ export class AuthService {
         });
 
         return {
-            message: authConstants.success.loginSuccess,
             accessToken,
+            user,
         };
     }
 
