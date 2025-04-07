@@ -39,4 +39,10 @@ export class AuthController {
             user: req.user,
         };
     }
+
+    @Post("refresh-token")
+    @ResponseMessage(authConstants.success.tokenSuccess)
+    refreshToken(@Req() req: Request & { user: Omit<User, "password"> }) {
+        return this.authService.refreshToken(req.user.id, req.user.email);
+    }
 }

@@ -2,15 +2,16 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { authService } from "@/features/auth/service";
+import { authApi } from "@/features/auth";
 
 export function LoginForm({ className, ...props }: React.ComponentPropsWithoutRef<"form">) {
-    const handleSubmit = async () => {
-        const data = await authService.login({
+    const authMutation = authApi.mutation.useSignin();
+
+    const handleSubmit = () => {
+        authMutation.mutate({
             email: "user@test.com",
-            password: "12345678",
+            password: "123456789",
         });
-        localStorage.setItem("access_token", data.accessToken);
     };
 
     return (

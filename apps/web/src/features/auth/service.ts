@@ -1,5 +1,10 @@
-import { z } from "zod";
-import { authRequestSchema } from "./type";
+import {
+    ProfileResponse,
+    SigninRequest,
+    SigninResponse,
+    SignupRequest,
+    SignupResponse,
+} from "./type";
 import axiosRequest from "@/lib/axios-request";
 import { RequestMethod } from "@/enums/request-method";
 
@@ -11,20 +16,31 @@ class AuthService {
         profile: "/auth/profile",
     };
 
-    async login(data: z.infer<typeof authRequestSchema.signin>) {
-        const response = await axiosRequest({
+    async signin(data: SigninRequest) {
+        return axiosRequest<SigninResponse>({
             method: RequestMethod.POST,
             url: this.endpoints.signin,
             data,
         });
-        return response.data;
+    }
+    async signout() {
+        return axiosRequest({
+            method: RequestMethod.POST,
+            url: this.endpoints.signout,
+        });
+    }
+    async signup(data: SignupRequest) {
+        return axiosRequest<SignupResponse>({
+            method: RequestMethod.POST,
+            url: this.endpoints.signup,
+            data,
+        });
     }
     async getProfile() {
-        const response = await axiosRequest({
+        return axiosRequest<ProfileResponse>({
             method: RequestMethod.GET,
             url: this.endpoints.profile,
         });
-        return response.data;
     }
 }
 

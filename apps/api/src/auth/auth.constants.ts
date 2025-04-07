@@ -1,6 +1,6 @@
 const jwtConstants = {
     secret: process.env.JWT_SECRET || "secretKey",
-    expiresIn: process.env.JWT_EXPIRATION_TIME || "1h",
+    expiresIn: process.env.JWT_EXPIRATION_TIME || "5s",
 };
 
 const errorConstants = {
@@ -8,6 +8,7 @@ const errorConstants = {
     userNotFound: "User not found",
     existingUser: "User already exists",
     userNotCreated: "Failed to create user",
+    tokenBlacklisted: "Token is blacklisted",
 };
 
 const successConstants = {

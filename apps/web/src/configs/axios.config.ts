@@ -46,7 +46,7 @@ client.interceptors.response.use(
         const originalConfig = err.config;
         const status = err.response ? err.response.status : null;
 
-        if (status === HttpStatusCode.Unauthorized && retryCount < 3) {
+        if (status === HttpStatusCode.Unauthorized && retryCount < 1) {
             retryCount++;
             try {
                 const accessToken = "";

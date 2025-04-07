@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable } from "@nestjs/common";
+import { BadRequestException, Injectable, NotFoundException } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
 import { PrismaService } from "src/prisma/prisma.service";
 import * as bcrypt from "bcrypt";
@@ -89,6 +89,24 @@ export class AuthService {
         this.tokenBlacklist.add(token);
 
         return;
+    }
+
+    async refreshToken(userId: string, token: string) {
+        const user = await this.prisma.user.findUnique({
+            where: { id: userId },
+        });
+        if (!user) {
+            throw new NotFoundException(authConstants.error.userNotFound);
+        }
+        if (this.isTokenBlacklisted(token)) {
+            throw new BadRequestException(authConstants.error.tokenBlacklisted);
+        }
+        const accessToken = await this.generateToken({
+            userId: user.id,
+        });
+        return {
+            accessToken,
+        };
     }
 
     async generateToken(jwtPayload: JwtPayload) {
