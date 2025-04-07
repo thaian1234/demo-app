@@ -1,4 +1,14 @@
-import { Body, Controller, Get, Post, Req, UseGuards } from "@nestjs/common";
+import {
+    Body,
+    Controller,
+    Get,
+    Headers,
+    HttpCode,
+    Post,
+    Req,
+    UnauthorizedException,
+    UseGuards,
+} from "@nestjs/common";
 import { AuthService } from "./auth.service";
 import { SignUpDto } from "./dto/sign-up.dto";
 import { LocalAuthGuard } from "./guards/local-auth.guard";
@@ -27,8 +37,19 @@ export class AuthController {
 
     @Post("signout")
     @ResponseMessage(authConstants.success.logoutSuccess)
-    signout(@Req() req: AuthRequest) {
-        return this.authService.signOut(req.user.id, req.user.email);
+    @HttpCode(200)
+    @UseGuards(JwtAuthGuard)
+    signout(@Req() req: AuthRequest, @Headers("Authorization") authorization: string) {
+        const token = this.extractTokenFromHeader(authorization);
+        if (!token) {
+            throw new UnauthorizedException("No token provided");
+        }
+        return this.authService.signOut(req.user.userId, token);
+    }
+
+    private extractTokenFromHeader(authorization: string): string | undefined {
+        const [type, token] = authorization?.split(" ") ?? [];
+        return type === "Bearer" ? token : undefined;
     }
 
     // TODO: Query user from Database

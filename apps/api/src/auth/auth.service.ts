@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable, NotFoundException } from "@nestjs/common";
+import { BadRequestException, Injectable } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
 import { PrismaService } from "src/prisma/prisma.service";
 import * as bcrypt from "bcrypt";
@@ -88,21 +88,8 @@ export class AuthService {
         }
         this.tokenBlacklist.add(token);
 
-        return;
-    }
-
-    async refreshToken(userId: string) {
-        const user = await this.prisma.user.findUnique({
-            where: { id: userId },
-        });
-        if (!user) {
-            throw new NotFoundException(authConstants.error.userNotFound);
-        }
-        const accessToken = await this.generateToken({
-            userId: user.id,
-        });
         return {
-            accessToken,
+            message: authConstants.success.logoutSuccess,
         };
     }
 

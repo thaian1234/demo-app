@@ -1,6 +1,6 @@
 const jwtConstants = {
     secret: process.env.JWT_SECRET || "secretKey",
-    expiresIn: process.env.JWT_EXPIRATION_TIME || "5s",
+    expiresIn: process.env.JWT_EXPIRATION_TIME || "1h",
 };
 
 const errorConstants = {

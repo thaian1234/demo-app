@@ -1,3 +1,3 @@
-import { User } from "@prisma/client";
+import { JwtPayload } from "src/auth/dto/jwt-payload.dto";
 
-export type AuthRequest = Request & { user: Omit<User, "password"> };
+export type AuthRequest = Request & { user: JwtPayload };
