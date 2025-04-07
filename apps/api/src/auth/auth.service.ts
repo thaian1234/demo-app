@@ -91,15 +91,12 @@ export class AuthService {
         return;
     }
 
-    async refreshToken(userId: string, token: string) {
+    async refreshToken(userId: string) {
         const user = await this.prisma.user.findUnique({
             where: { id: userId },
         });
         if (!user) {
             throw new NotFoundException(authConstants.error.userNotFound);
-        }
-        if (this.isTokenBlacklisted(token)) {
-            throw new BadRequestException(authConstants.error.tokenBlacklisted);
         }
         const accessToken = await this.generateToken({
             userId: user.id,

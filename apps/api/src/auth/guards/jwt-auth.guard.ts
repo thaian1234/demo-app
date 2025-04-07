@@ -1,10 +1,8 @@
-import { ExecutionContext, HttpStatus, Injectable, UnauthorizedException } from "@nestjs/common";
+import { ExecutionContext, Injectable, UnauthorizedException } from "@nestjs/common";
 import { AuthGuard } from "@nestjs/passport";
 import { Observable } from "rxjs";
 import { AuthService } from "../auth.service";
 import { Request } from "express";
-import { TokenExpiredError } from "@nestjs/jwt";
-import { errorCodeConstants } from "src/utils/constants/error-code.constant";
 
 @Injectable()
 export class JwtAuthGuard extends AuthGuard("jwt") {
@@ -31,26 +29,5 @@ export class JwtAuthGuard extends AuthGuard("jwt") {
     private extractTokenFromHeader(request: Request): string | undefined {
         const [type, token] = request.headers.authorization?.split(" ") ?? [];
         return type === "Bearer" ? token : undefined;
-    }
-
-    handleRequest<TUser = any>(
-        err: any,
-        user: TUser,
-        info: any,
-        context: ExecutionContext,
-        status?: any,
-    ): TUser {
-        if (info instanceof TokenExpiredError) {
-            throw new UnauthorizedException({
-                code: errorCodeConstants.TOKEN_EXPIRED,
-                success: false,
-                message: "Token has expired",
-                statusCode: HttpStatus.UNAUTHORIZED,
-            });
-        }
-        if (err || !user) {
-            throw err || new UnauthorizedException("Unauthorized");
-        }
-        return user;
     }
 }

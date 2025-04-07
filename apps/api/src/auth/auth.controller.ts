@@ -6,7 +6,7 @@ import { SignInDto } from "./dto/sign-in.dto";
 import { ResponseMessage } from "../utils/decorators/response-message.decorator";
 import { authConstants } from "./auth.constants";
 import { JwtAuthGuard } from "./guards/jwt-auth.guard";
-import { User } from "@prisma/client";
+import { AuthRequest } from "src/utils/types/auth-request.type";
 
 @Controller("auth")
 export class AuthController {
@@ -27,22 +27,16 @@ export class AuthController {
 
     @Post("signout")
     @ResponseMessage(authConstants.success.logoutSuccess)
-    signout(@Req() req: Request & { user: Omit<User, "password"> }) {
+    signout(@Req() req: AuthRequest) {
         return this.authService.signOut(req.user.id, req.user.email);
     }
 
     // TODO: Query user from Database
     @UseGuards(JwtAuthGuard)
     @Get("profile")
-    getProfile(@Req() req: Request & { user: Omit<User, "password"> }) {
+    getProfile(@Req() req: AuthRequest) {
         return {
             user: req.user,
         };
-    }
-
-    @Post("refresh-token")
-    @ResponseMessage(authConstants.success.tokenSuccess)
-    refreshToken(@Req() req: Request & { user: Omit<User, "password"> }) {
-        return this.authService.refreshToken(req.user.id, req.user.email);
     }
 }
