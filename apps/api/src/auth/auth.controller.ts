@@ -4,23 +4,33 @@ import {
     Get,
     Headers,
     HttpCode,
+    HttpStatus,
     Post,
     Req,
     UnauthorizedException,
     UseGuards,
 } from "@nestjs/common";
+
 import { AuthService } from "./auth.service";
-import { SignUpDto } from "./dto/sign-up.dto";
+import { UserService } from "src/user/user.service";
+
 import { LocalAuthGuard } from "./guards/local-auth.guard";
-import { SignInDto } from "./dto/sign-in.dto";
-import { ResponseMessage } from "../utils/decorators/response-message.decorator";
-import { authConstants } from "./auth.constants";
 import { JwtAuthGuard } from "./guards/jwt-auth.guard";
+
+import { SignUpDto } from "./dto/sign-up.dto";
+import { SignInDto } from "./dto/sign-in.dto";
+
+import { ResponseMessage } from "../utils/decorators/response-message.decorator";
 import { AuthRequest } from "src/utils/types/auth-request.type";
+
+import { authConstants } from "./auth.constants";
 
 @Controller("auth")
 export class AuthController {
-    constructor(private readonly authService: AuthService) {}
+    constructor(
+        private readonly authService: AuthService,
+        private readonly userService: UserService,
+    ) {}
 
     @Post("signup")
     @ResponseMessage(authConstants.success.userCreated)
@@ -37,7 +47,7 @@ export class AuthController {
 
     @Post("signout")
     @ResponseMessage(authConstants.success.logoutSuccess)
-    @HttpCode(200)
+    @HttpCode(HttpStatus.OK)
     @UseGuards(JwtAuthGuard)
     signout(@Req() req: AuthRequest, @Headers("Authorization") authorization: string) {
         const token = this.extractTokenFromHeader(authorization);
@@ -52,12 +62,16 @@ export class AuthController {
         return type === "Bearer" ? token : undefined;
     }
 
-    // TODO: Query user from Database
-    @UseGuards(JwtAuthGuard)
     @Get("profile")
+    @UseGuards(JwtAuthGuard)
     getProfile(@Req() req: AuthRequest) {
-        return {
-            user: req.user,
-        };
+        return this.userService.findUser({
+            where: {
+                id: req.user.userId,
+            },
+            omit: {
+                password: true,
+            },
+        });
     }
 }

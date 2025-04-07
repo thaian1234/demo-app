@@ -1,25 +1,28 @@
-import { BadRequestException, Injectable } from "@nestjs/common";
-import { JwtService } from "@nestjs/jwt";
-import { PrismaService } from "src/prisma/prisma.service";
 import * as bcrypt from "bcrypt";
-import { SignUpDto } from "./dto/sign-up.dto";
+import { BadRequestException, Injectable } from "@nestjs/common";
+
+import { JwtService } from "@nestjs/jwt";
+import { UserService } from "src/user/user.service";
+
 import { authConstants } from "./auth.constants";
+
 import { JwtPayload } from "./dto/jwt-payload.dto";
 import { SignInDto } from "./dto/sign-in.dto";
+import { SignUpDto } from "./dto/sign-up.dto";
 
 @Injectable()
 export class AuthService {
     private tokenBlacklist: Set<string> = new Set();
 
     constructor(
-        private readonly prisma: PrismaService,
+        private readonly userService: UserService,
         private readonly jwtService: JwtService,
     ) {}
 
     async validateUser(email: string, password: string) {
-        const user = await this.prisma.user.findUnique({
+        const user = await this.userService.findUser({
             where: {
-                email: email,
+                email,
             },
         });
 
@@ -31,8 +34,10 @@ export class AuthService {
     }
 
     async signUp(signUpDto: SignUpDto) {
-        const existingUser = await this.prisma.user.findUnique({
-            where: { email: signUpDto.email },
+        const existingUser = await this.userService.findUser({
+            where: {
+                email: signUpDto.email,
+            },
         });
 
         if (existingUser) {
@@ -40,7 +45,7 @@ export class AuthService {
         }
 
         const hashedPassword = bcrypt.hashSync(signUpDto.password, 10);
-        const user = await this.prisma.user.create({
+        const user = await this.userService.createUser({
             data: {
                 email: signUpDto.email,
                 username: signUpDto.username,
@@ -79,8 +84,10 @@ export class AuthService {
     }
 
     async signOut(userId: string, token: string) {
-        const user = await this.prisma.user.findUnique({
-            where: { id: userId },
+        const user = await this.userService.findUser({
+            where: {
+                id: userId,
+            },
         });
 
         if (!user) {
