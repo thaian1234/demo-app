@@ -1,6 +1,8 @@
+import { HttpStatusCode } from "axios";
+
 export interface BaseResponse {
     success: boolean;
-    statusCode: number;
+    statusCode: HttpStatusCode;
     message: string;
 }
 
@@ -11,6 +13,6 @@ export interface ApiResponse<T> extends BaseResponse {
 export interface RequestError {
     message: string;
     code?: string;
-    statusCode?: number;
+    statusCode?: HttpStatusCode;
     response?: unknown;
 }

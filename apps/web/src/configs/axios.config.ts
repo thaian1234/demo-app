@@ -49,11 +49,10 @@ client.interceptors.response.use(
         if (status === HttpStatusCode.Unauthorized && retryCount < 1) {
             retryCount++;
             try {
-                const accessToken = "";
-                // const accessTokenFromStorage = localStorage.getItem(LOCAL_STORAGE.ACCESS_TOKEN);
-                // TODO: Refresh token here
-                // localStorage.setItem(LOCAL_STORAGE.ACCESS_TOKEN, accessTokenFromStorage);
-                // await AuthService.refresh();
+                const accessToken = localStorage.getItem(LOCAL_STORAGE.ACCESS_TOKEN);
+                if (!accessToken) {
+                    throw new Error("No access token found");
+                }
                 client.defaults.headers.common.Authorization = `Bearer ${accessToken}`;
                 return await client(originalConfig);
             } catch (error) {

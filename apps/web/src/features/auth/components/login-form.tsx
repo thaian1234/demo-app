@@ -1,8 +1,6 @@
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import { authApi } from "@/features/auth";
 import { useForm } from "react-hook-form";
-import { authRequestSchema } from "@/features/auth/type";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
     Form,
@@ -14,17 +12,18 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Link } from "react-router-dom";
+import { authApi } from "../api";
+import { authRequestSchema } from "../api/type";
 
-export function SignUpForm({ className, ...props }: React.ComponentPropsWithoutRef<"form">) {
+export function LoginForm({ className, ...props }: React.ComponentPropsWithoutRef<"form">) {
     const form = useForm({
-        resolver: zodResolver(authRequestSchema.signup),
+        resolver: zodResolver(authRequestSchema.signin),
         defaultValues: {
             email: "",
             password: "",
-            username: "",
         },
     });
-    const authMutation = authApi.mutation.useSignup();
+    const authMutation = authApi.mutation.useSignin();
     const onSubmit = form.handleSubmit(data => {
         authMutation.mutate(data, {
             onSuccess: () => {
@@ -37,29 +36,12 @@ export function SignUpForm({ className, ...props }: React.ComponentPropsWithoutR
         <Form {...form}>
             <form className={cn("flex flex-col gap-6", className)} onSubmit={onSubmit} {...props}>
                 <div className="flex flex-col items-center gap-2 text-center">
-                    <h1 className="text-2xl font-bold">Create new account</h1>
+                    <h1 className="text-2xl font-bold">Login to your account</h1>
                     <p className="text-balance text-sm text-muted-foreground">
-                        Enter your information below to sign up your account
+                        Enter your email below to login to your account
                     </p>
                 </div>
                 <div className="grid gap-6">
-                    <FormField
-                        control={form.control}
-                        name="username"
-                        render={({ field }) => (
-                            <FormItem>
-                                <FormLabel>Username</FormLabel>
-                                <FormControl>
-                                    <Input
-                                        placeholder="didongviet"
-                                        disabled={authMutation.isPending}
-                                        {...field}
-                                    />
-                                </FormControl>
-                                <FormMessage />
-                            </FormItem>
-                        )}
-                    />
                     <FormField
                         control={form.control}
                         name="email"
@@ -86,8 +68,8 @@ export function SignUpForm({ className, ...props }: React.ComponentPropsWithoutR
                                 <FormControl>
                                     <Input
                                         placeholder="*******"
-                                        disabled={authMutation.isPending}
                                         type="password"
+                                        disabled={authMutation.isPending}
                                         {...field}
                                     />
                                 </FormControl>
@@ -96,13 +78,13 @@ export function SignUpForm({ className, ...props }: React.ComponentPropsWithoutR
                         )}
                     />
                     <Button type="submit" className="w-full" disabled={authMutation.isPending}>
-                        Sign up
+                        Sign in
                     </Button>
                 </div>
                 <div className="text-center text-sm">
-                    Have an account?{" "}
-                    <Link to={"/sign-in"} className="underline underline-offset-4">
-                        Sign in
+                    Don&apos;t have an account?{" "}
+                    <Link to={"/sign-up"} className="underline underline-offset-4">
+                        Sign up
                     </Link>
                 </div>
             </form>
