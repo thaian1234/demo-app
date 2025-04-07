@@ -13,10 +13,10 @@ const LOCAL_STORAGE = {
 
 export const client = (() => {
     return axios.create({
-        baseURL: `${import.meta.env.VITE_BACKEND_BASE_URL}/v1`, //TODO: Sửa port thành 5000 or 8000
+        baseURL: `${import.meta.env.VITE_BACKEND_BASE_URL}/api`,
         headers: {
             Accept: "application/json",
-            toJSON: true,
+            "Content-Type": "application/json",
         },
         timeout: 10000,
         withCredentials: true,
@@ -29,7 +29,6 @@ client.interceptors.request.use(
         if (accessToken) {
             config.headers["Authorization"] = `Bearer ${accessToken}`;
         }
-        config.headers["Content-Type"] = "application/json";
         return config;
     },
     (error: AxiosError) => {
@@ -64,12 +63,3 @@ client.interceptors.response.use(
         return Promise.reject(err);
     },
 );
-
-export const AxiosMethod = {
-    GET: "GET",
-    POST: "POST",
-    PUT: "PUT",
-    DELETE: "DELETE",
-    OPTIONS: "OPTIONS",
-    PATCH: "PATCH",
-};

@@ -9,9 +9,19 @@ import { Reflector } from "@nestjs/core";
 async function bootstrap() {
     const app = await NestFactory.create(AppModule);
 
-    const port = app.get(ConfigService).get<number>("PORT", 4000);
+    const configService = app.get(ConfigService);
     const reflector = app.get(Reflector);
 
+    const port = configService.get<number>("PORT", 4000);
+    const frontendUrl = configService.get<string>("FRONTEND_URL", "http://localhost:5173");
+
+    app.enableCors({
+        origin: frontendUrl,
+        methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
+        credentials: true,
+        allowedHeaders: ["Content-Type", "Authorization", "Accept"],
+        exposedHeaders: ["Content-Disposition"],
+    });
     app.setGlobalPrefix("api");
     app.useGlobalPipes(
         new ValidationPipe({

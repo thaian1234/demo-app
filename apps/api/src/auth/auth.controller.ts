@@ -31,6 +31,7 @@ export class AuthController {
         return this.authService.signOut(req.user.id, req.user.email);
     }
 
+    // TODO: Query user from Database
     @UseGuards(JwtAuthGuard)
     @Get("profile")
     getProfile(@Req() req: Request & { user: Omit<User, "password"> }) {
