@@ -11,6 +11,7 @@ import { JwtStrategy } from "./strategies/jwt.strategy";
 import { UserModule } from "src/user/user.module";
 import { EmailVerificationModule } from "src/email-verification/email-verification.module";
 import { NodemailModule } from "src/nodemail/nodemail.module";
+import { PasswordResetModule } from "src/password-reset/password-reset.module";
 
 @Module({
     imports: [
@@ -22,6 +23,7 @@ import { NodemailModule } from "src/nodemail/nodemail.module";
         UserModule,
         EmailVerificationModule,
         NodemailModule,
+        PasswordResetModule,
     ],
     controllers: [AuthController],
     providers: [AuthService, PrismaService, LocalStrategy, JwtStrategy],

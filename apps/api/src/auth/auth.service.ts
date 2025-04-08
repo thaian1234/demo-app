@@ -1,5 +1,11 @@
 import * as bcrypt from "bcrypt";
-import { BadRequestException, Injectable, UnauthorizedException } from "@nestjs/common";
+import {
+    BadRequestException,
+    Injectable,
+    Logger,
+    NotFoundException,
+    UnauthorizedException,
+} from "@nestjs/common";
 
 import { JwtService } from "@nestjs/jwt";
 import { UserService } from "src/user/user.service";
@@ -11,15 +17,18 @@ import { SignInDto } from "./dto/sign-in.dto";
 import { SignUpDto } from "./dto/sign-up.dto";
 import { EmailVerificationService } from "src/email-verification/email-verification.service";
 import { NodemailService } from "src/nodemail/nodemail.service";
+import { PasswordResetService } from "src/password-reset/password-reset.service";
 
 @Injectable()
 export class AuthService {
     private tokenBlacklist: Set<string> = new Set();
+    private logger = new Logger(AuthService.name);
 
     constructor(
         private readonly userService: UserService,
         private readonly jwtService: JwtService,
         private readonly emailVerificationService: EmailVerificationService,
+        private readonly passworddResetService: PasswordResetService,
         private readonly nodeMailerService: NodemailService,
     ) {}
 
@@ -138,6 +147,26 @@ export class AuthService {
         return {
             accessToken,
         };
+    }
+
+    async requestResetPassword(email: string) {
+        const existingUser = await this.userService.findUser({
+            where: {
+                email,
+            },
+        });
+        if (!existingUser) {
+            throw new NotFoundException(authConstants.error.userNotFound);
+        }
+        const { resetUrl } = await this.passworddResetService.createPasswordResetToken(
+            existingUser.id,
+        );
+        try {
+            await this.nodeMailerService.sendPasswordResetEmail(resetUrl, email);
+        } catch (error) {
+            this.logger.error(error);
+            throw new BadRequestException(authConstants.error.emailNotSent);
+        }
     }
 
     async generateToken(jwtPayload: JwtPayload) {

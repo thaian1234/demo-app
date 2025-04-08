@@ -10,6 +10,7 @@ const errorConstants = {
     tokenBlacklisted: "Token is blacklisted",
     emailNotVerified: "Your email is not verified",
     invalidCode: "Invalid code",
+    emailNotSent: "Email not sent",
 };
 
 const successConstants = {
@@ -18,6 +19,8 @@ const successConstants = {
     logoutSuccess: "Logout successful",
     tokenSuccess: "Token generated successfully",
     emailVerified: "Email verified successfully",
+    passwordResetEmailSent: "Password reset email sent successfully",
+    passwordResetSuccess: "Password reset successful",
 };
 
 export const authConstants = {

@@ -24,7 +24,7 @@ export class NodemailService implements OnModuleInit {
     async onModuleInit() {
         this.transporter = nodemailer.createTransport({
             host: this.configService.getOrThrow<string>("SMTP_HOST"),
-            port: parseInt(this.configService.getOrThrow<string>("SMTP_PORT"), 587),
+            port: parseInt(this.configService.getOrThrow<string>("SMTP_PORT"), 10),
             secure: this.configService.get<boolean>("SMTP_SECURE", false),
             auth: {
                 user: this.fromEmail,
@@ -54,6 +54,19 @@ export class NodemailService implements OnModuleInit {
     public async sendVerifcationEmailCode(code: string, toEmail: string) {
         try {
             const options = this.createEmailConfig("Verification Code", code, toEmail);
+            const { accepted, rejected } = await this.transporter.sendMail(options);
+            if (rejected && rejected.length > 0) {
+                this.logger.error("Some recipients were rejected", rejected);
+            }
+            return accepted && accepted.length > 0;
+        } catch (error) {
+            this.logger.error("Error sending password reset email", error);
+            return false;
+        }
+    }
+    public async sendPasswordResetEmail(resetUrl: string, toEmail: string) {
+        try {
+            const options = this.createEmailConfig("Password Reset", resetUrl, toEmail);
             const { accepted, rejected } = await this.transporter.sendMail(options);
             if (rejected && rejected.length > 0) {
                 this.logger.error("Some recipients were rejected", rejected);

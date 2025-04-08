@@ -1,3 +1,4 @@
+import { PasswordResetModule } from "./password-reset/password-reset.module";
 import { NodemailModule } from "./nodemail/nodemail.module";
 import { EmailVerificationModule } from "./email-verification/email-verification.module";
 import { UserModule } from "./user/user.module";
@@ -9,6 +10,7 @@ import jwtConfig from "./utils/configs/jwtConfig";
 
 @Module({
     imports: [
+        PasswordResetModule,
         NodemailModule,
         EmailVerificationModule,
         UserModule,
