@@ -1,8 +1,8 @@
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { authService } from "./service";
-import { SigninRequest, SignupRequest } from "../type";
 import { useNavigate } from "react-router-dom";
+import { SigninRequest, SignupRequest } from "./type";
 
 export const authApi = {
     query: {
@@ -51,6 +51,23 @@ export const authApi = {
                     if (localStorage.getItem("access_token")) {
                         localStorage.removeItem("access_token");
                     }
+                },
+            });
+        },
+        useSignout() {
+            const navigate = useNavigate();
+            const queryClient = useQueryClient();
+
+            return useMutation({
+                mutationFn: () => authService.signout(),
+                onSuccess: () => {
+                    toast.success("Sign out successfully");
+                    localStorage.removeItem("access_token");
+                    queryClient.removeQueries({ queryKey: ["profile"] });
+                    navigate("/sign-in");
+                },
+                onError: error => {
+                    toast.error(error.message);
                 },
             });
         },
