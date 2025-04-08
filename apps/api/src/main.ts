@@ -5,6 +5,7 @@ import { ValidationPipe } from "@nestjs/common/pipes/validation.pipe";
 import { ConfigService } from "@nestjs/config";
 import { ResponseInterceptor } from "./utils/interceptors/response.interceptor";
 import { Reflector } from "@nestjs/core";
+import { DocumentBuilder, SwaggerModule } from "@nestjs/swagger";
 
 async function bootstrap() {
     const app = await NestFactory.create(AppModule);
@@ -15,9 +16,18 @@ async function bootstrap() {
     const port = configService.get<number>("PORT", 4000);
     const frontendUrl = configService.get<string>("FRONTEND_URL", "http://localhost:5173");
 
+    const config = new DocumentBuilder()
+        .setTitle("Demo Application Swagger")
+        .setDescription("The Demo API description")
+        .setVersion("1.0")
+        .addTag("demo")
+        .build();
+    const documentFactory = () => SwaggerModule.createDocument(app, config);
+    SwaggerModule.setup("swagger", app, documentFactory);
+
     app.enableCors({
         origin: frontendUrl,
-        methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
+        methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
         credentials: true,
         allowedHeaders: ["Content-Type", "Authorization", "Accept"],
         exposedHeaders: ["Content-Disposition"],

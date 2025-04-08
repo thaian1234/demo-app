@@ -36,6 +36,7 @@ export class AuthService {
         const user = await this.userService.findUser({
             where: {
                 email,
+                emailVerified: true,
             },
         });
 
@@ -74,7 +75,9 @@ export class AuthService {
         }
 
         const code = await this.emailVerificationService.generateEmailVerificationCode(user.id);
-        await this.nodeMailerService.sendVerifcationEmailCode(code, user.email);
+        this.nodeMailerService.sendVerifcationEmailCode(code, user.email).catch(error => {
+            this.logger.error(error);
+        });
 
         return {
             userId: user.id,
@@ -161,12 +164,9 @@ export class AuthService {
         const { resetUrl } = await this.passworddResetService.createPasswordResetToken(
             existingUser.id,
         );
-        try {
-            await this.nodeMailerService.sendPasswordResetEmail(resetUrl, email);
-        } catch (error) {
+        this.nodeMailerService.sendPasswordResetEmail(resetUrl, email).catch(error => {
             this.logger.error(error);
-            throw new BadRequestException(authConstants.error.emailNotSent);
-        }
+        });
     }
 
     async generateToken(jwtPayload: JwtPayload) {

@@ -13,6 +13,7 @@ import SignUpPage from "./pages/signup.page.tsx";
 import HomePage from "./pages/home.page.tsx";
 import AuthLayout from "./layouts/auth.layout.tsx";
 import OtpPage from "./pages/otp.page.tsx";
+import ResetPasswordPage from "./pages/reset-password.page.tsx";
 
 const router = createBrowserRouter([
     {
@@ -32,6 +33,10 @@ const router = createBrowserRouter([
                     {
                         element: <OtpPage />,
                         path: "/otp-verification",
+                    },
+                    {
+                        element: <ResetPasswordPage />,
+                        path: "/reset-password/:token?",
                     },
                 ],
             },

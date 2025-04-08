@@ -1,11 +1,13 @@
 import {
     ProfileResponse,
+    ResetPasswordRequest,
     SigninRequest,
     SigninResponse,
     SignupRequest,
     SignupResponse,
     VerifyEmailRequest,
     VerifyEmailResponse,
+    VerifyResetPasswordRequest,
 } from "./type";
 import axiosRequest from "@/lib/axios-request";
 import { RequestMethod } from "@/enums/request-method";
@@ -17,6 +19,8 @@ class AuthService {
         signup: "/auth/signup",
         profile: "/auth/profile",
         verifyEmai: "/auth/verify-email",
+        requestResetPassword: "/auth/reset-password",
+        verifyResetPassword: "/auth/reset-password/verify",
     };
 
     async signin(data: SigninRequest) {
@@ -49,6 +53,20 @@ class AuthService {
         return axiosRequest<VerifyEmailResponse>({
             method: RequestMethod.POST,
             url: this.endpoints.verifyEmai,
+            data,
+        });
+    }
+    async requestResetPassword(data: ResetPasswordRequest) {
+        return axiosRequest({
+            method: RequestMethod.POST,
+            url: this.endpoints.requestResetPassword,
+            data,
+        });
+    }
+    async verifyResetPassword(data: VerifyResetPasswordRequest) {
+        return axiosRequest({
+            method: RequestMethod.POST,
+            url: this.endpoints.verifyResetPassword,
             data,
         });
     }

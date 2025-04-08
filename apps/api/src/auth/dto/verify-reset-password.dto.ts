@@ -5,4 +5,7 @@ export declare class VerifyResetPasswordDto {
     @MinLength(8)
     @MaxLength(32)
     newPassword: string;
+
+    @IsNotEmpty()
+    token: string;
 }

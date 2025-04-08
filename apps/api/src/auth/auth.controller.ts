@@ -1,12 +1,10 @@
 import {
-    BadRequestException,
     Body,
     Controller,
     Get,
     Headers,
     HttpCode,
     HttpStatus,
-    Param,
     Post,
     Req,
     UnauthorizedException,
@@ -28,7 +26,6 @@ import { AuthRequest } from "src/utils/types/auth-request.type";
 import { authConstants } from "./auth.constants";
 import { VerifyEmailDto } from "./dto/verify-email.dto";
 import { RequestPasswordResetDto } from "./dto/request-password-reset.dto";
-import { PasswordResetToken } from "@prisma/client";
 import { VerifyResetPasswordDto } from "./dto/verify-reset-password.dto";
 import { PasswordResetService } from "src/password-reset/password-reset.service";
 
@@ -91,17 +88,14 @@ export class AuthController {
         return this.authService.requestResetPassword(requestPasswordResetDto.email);
     }
 
-    @Post("password-reset/:token")
+    @Post("password-reset/verify")
     @ResponseMessage(authConstants.success.passwordResetSuccess)
     @HttpCode(HttpStatus.OK)
-    verifyPasswordResetToken(
-        @Body() passwordResetTokenDto: VerifyResetPasswordDto,
-        @Param("token") token: string,
-    ) {
-        if (!token) {
-            throw new BadRequestException("No token provided");
-        }
-        return this.passwordResetService.resetPassword(token, passwordResetTokenDto.newPassword);
+    verifyPasswordResetToken(@Body() passwordResetTokenDto: VerifyResetPasswordDto) {
+        return this.passwordResetService.resetPassword(
+            passwordResetTokenDto.token,
+            passwordResetTokenDto.newPassword,
+        );
     }
     private extractTokenFromHeader(authorization: string): string | undefined {
         const [type, token] = authorization?.split(" ") ?? [];
