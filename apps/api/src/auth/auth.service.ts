@@ -106,10 +106,11 @@ export class AuthService {
         };
     }
 
-    async verifyEmail(email: string, code: string) {
+    async verifyEmail(userId: string, code: string) {
         const user = await this.userService.findUser({
             where: {
-                email,
+                id: userId,
+                emailVerified: false,
             },
         });
         if (!user) {

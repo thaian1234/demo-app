@@ -73,8 +73,9 @@ export class AuthController {
 
     @Post("verify-email")
     @ResponseMessage(authConstants.success.emailVerified)
+    @HttpCode(HttpStatus.OK)
     verifyEmail(@Body() verifyEmailDto: VerifyEmailDto) {
-        return this.authService.verifyEmail(verifyEmailDto.email, verifyEmailDto.code);
+        return this.authService.verifyEmail(verifyEmailDto.userId, verifyEmailDto.code);
     }
 
     private extractTokenFromHeader(authorization: string): string | undefined {

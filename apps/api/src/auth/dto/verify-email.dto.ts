@@ -1,8 +1,8 @@
-import { IsEmail, IsNumber, IsNumberString, Length } from "class-validator";
+import { IsNumberString, IsUUID, Length } from "class-validator";
 
 export class VerifyEmailDto {
-    @IsEmail()
-    email!: string;
+    @IsUUID()
+    userId!: string;
 
     @IsNumberString()
     @Length(8, 8, { message: "Code must be 8 digits" })

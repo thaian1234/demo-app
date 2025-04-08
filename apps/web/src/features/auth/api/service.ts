@@ -4,6 +4,8 @@ import {
     SigninResponse,
     SignupRequest,
     SignupResponse,
+    VerifyEmailRequest,
+    VerifyEmailResponse,
 } from "./type";
 import axiosRequest from "@/lib/axios-request";
 import { RequestMethod } from "@/enums/request-method";
@@ -14,6 +16,7 @@ class AuthService {
         signout: "/auth/signout",
         signup: "/auth/signup",
         profile: "/auth/profile",
+        verifyEmai: "/auth/verify-email",
     };
 
     async signin(data: SigninRequest) {
@@ -40,6 +43,13 @@ class AuthService {
         return axiosRequest<ProfileResponse>({
             method: RequestMethod.GET,
             url: this.endpoints.profile,
+        });
+    }
+    async verifyEmail(data: VerifyEmailRequest) {
+        return axiosRequest<VerifyEmailResponse>({
+            method: RequestMethod.POST,
+            url: this.endpoints.verifyEmai,
+            data,
         });
     }
 }
