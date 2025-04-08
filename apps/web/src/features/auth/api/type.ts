@@ -12,7 +12,7 @@ export const authRequestSchema = {
         username: z.string().min(4),
         password: z.string().min(8).max(32),
     }),
-    resetPassword: z.object({
+    requestResetPassword: z.object({
         email: z.string().email(),
     }),
     verifyResetPassword: z.object({
@@ -31,7 +31,7 @@ export const authRequestSchema = {
 // Request type
 type SigninRequest = z.infer<typeof authRequestSchema.signin>;
 type SignupRequest = z.infer<typeof authRequestSchema.signup>;
-type ResetPasswordRequest = z.infer<typeof authRequestSchema.resetPassword>;
+type ResetPasswordRequest = z.infer<typeof authRequestSchema.requestResetPassword>;
 type VerifyEmailRequest = z.infer<typeof authRequestSchema.verifyEmail>;
 type VerifyResetPasswordRequest = z.infer<typeof authRequestSchema.verifyResetPassword>;
 

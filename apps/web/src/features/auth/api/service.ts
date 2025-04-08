@@ -19,8 +19,8 @@ class AuthService {
         signup: "/auth/signup",
         profile: "/auth/profile",
         verifyEmai: "/auth/verify-email",
-        requestResetPassword: "/auth/reset-password",
-        verifyResetPassword: "/auth/reset-password/verify",
+        requestResetPassword: "/auth/password-reset",
+        verifyResetPassword: "/auth/password-reset/verify",
     };
 
     async signin(data: SigninRequest) {
