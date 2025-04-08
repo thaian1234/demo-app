@@ -1,7 +1,6 @@
-const jwtConstants = {
-    secret: process.env.JWT_SECRET || "secretKey",
-    expiresIn: process.env.JWT_EXPIRATION_TIME || "1h",
-};
+import jwtConfig from "src/utils/configs/jwtConfig";
+
+const jwtConstants = jwtConfig();
 
 const errorConstants = {
     invalidCredentials: "Invalid credentials",
@@ -9,6 +8,8 @@ const errorConstants = {
     existingUser: "User already exists",
     userNotCreated: "Failed to create user",
     tokenBlacklisted: "Token is blacklisted",
+    emailNotVerified: "Your email is not verified",
+    invalidCode: "Invalid code",
 };
 
 const successConstants = {
@@ -16,6 +17,7 @@ const successConstants = {
     loginSuccess: "Login successful",
     logoutSuccess: "Logout successful",
     tokenSuccess: "Token generated successfully",
+    emailVerified: "Email verified successfully",
 };
 
 export const authConstants = {

@@ -10,5 +10,6 @@ import { Module } from "@nestjs/common";
     imports: [],
     controllers: [],
     providers: [EmailVerificationService, PrismaService],
+    exports: [EmailVerificationService],
 })
 export class EmailVerificationModule {}

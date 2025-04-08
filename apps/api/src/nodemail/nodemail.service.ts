@@ -8,6 +8,7 @@ import { Logger } from "@nestjs/common";
 
 @Injectable()
 export class NodemailService implements OnModuleInit {
+    private logger = new Logger(NodemailService.name);
     private transporter!: nodemailer.Transporter<
         SMTPTransport.SentMessageInfo,
         SMTPTransport.Options
@@ -34,7 +35,7 @@ export class NodemailService implements OnModuleInit {
         try {
             await this.transporter.verify();
         } catch (error) {
-            Logger.error("Error connecting to SMTP server", error);
+            this.logger.error("Error connecting to SMTP server", error);
         }
     }
 
@@ -55,11 +56,11 @@ export class NodemailService implements OnModuleInit {
             const options = this.createEmailConfig("Verification Code", code, toEmail);
             const { accepted, rejected } = await this.transporter.sendMail(options);
             if (rejected && rejected.length > 0) {
-                Logger.error("Some recipients were rejected", rejected);
+                this.logger.error("Some recipients were rejected", rejected);
             }
             return accepted && accepted.length > 0;
         } catch (error) {
-            Logger.error("Error sending verification email", error);
+            this.logger.error("Error sending verification email", error);
             return false;
         }
     }

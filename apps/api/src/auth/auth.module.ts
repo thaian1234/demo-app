@@ -9,6 +9,8 @@ import { PrismaService } from "src/prisma/prisma.service";
 import { LocalStrategy } from "./strategies/local.strategy";
 import { JwtStrategy } from "./strategies/jwt.strategy";
 import { UserModule } from "src/user/user.module";
+import { EmailVerificationModule } from "src/email-verification/email-verification.module";
+import { NodemailModule } from "src/nodemail/nodemail.module";
 
 @Module({
     imports: [
@@ -18,6 +20,8 @@ import { UserModule } from "src/user/user.module";
             signOptions: { expiresIn: authConstants.jwt.expiresIn, algorithm: "HS256" },
         }),
         UserModule,
+        EmailVerificationModule,
+        NodemailModule,
     ],
     controllers: [AuthController],
     providers: [AuthService, PrismaService, LocalStrategy, JwtStrategy],

@@ -24,6 +24,7 @@ import { ResponseMessage } from "../utils/decorators/response-message.decorator"
 import { AuthRequest } from "src/utils/types/auth-request.type";
 
 import { authConstants } from "./auth.constants";
+import { VerifyEmailDto } from "./dto/verify-email.dto";
 
 @Controller("auth")
 export class AuthController {
@@ -57,11 +58,6 @@ export class AuthController {
         return this.authService.signOut(req.user.userId, token);
     }
 
-    private extractTokenFromHeader(authorization: string): string | undefined {
-        const [type, token] = authorization?.split(" ") ?? [];
-        return type === "Bearer" ? token : undefined;
-    }
-
     @Get("profile")
     @UseGuards(JwtAuthGuard)
     getProfile(@Req() req: AuthRequest) {
@@ -73,5 +69,16 @@ export class AuthController {
                 password: true,
             },
         });
+    }
+
+    @Post("verify-email")
+    @ResponseMessage(authConstants.success.emailVerified)
+    verifyEmail(@Body() verifyEmailDto: VerifyEmailDto) {
+        return this.authService.verifyEmail(verifyEmailDto.email, verifyEmailDto.code);
+    }
+
+    private extractTokenFromHeader(authorization: string): string | undefined {
+        const [type, token] = authorization?.split(" ") ?? [];
+        return type === "Bearer" ? token : undefined;
     }
 }

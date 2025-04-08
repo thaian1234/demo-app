@@ -7,5 +7,6 @@ import { Module, LoggerService } from "@nestjs/common";
     imports: [],
     controllers: [],
     providers: [NodemailService, ConfigService],
+    exports: [NodemailService],
 })
 export class NodemailModule {}
