@@ -34,6 +34,6 @@ async function bootstrap() {
     Logger.log(`Application is running on: http://localhost:${port}/api`);
 }
 
-bootstrap().catch(() => {
-    Logger.error("Error starting the application");
+bootstrap().catch(err => {
+    Logger.error("Error starting the application", err);
 });

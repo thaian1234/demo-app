@@ -1,9 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import { PrismaService } from "src/prisma/prisma.service";
 
-import { TimeSpan, createDate } from "oslo";
-import { isWithinExpirationDate } from "oslo";
-import { alphabet, generateRandomString } from "oslo/crypto";
+import * as crypto from "crypto";
 
 @Injectable()
 export class EmailVerificationService {
@@ -11,15 +9,30 @@ export class EmailVerificationService {
 
     async generateEmailVerificationCode(userId: string) {
         await this.deleteAllEmailVerificationCodes(userId);
-        const code = generateRandomString(8, alphabet("0-9"));
+        const code = this.generateNumericCode(8);
+        const expiredAt = new Date();
+        expiredAt.setMinutes(expiredAt.getMinutes() + 15);
+
         const createdCode = await this.prisma.emailVerificationCode.create({
             data: {
                 userId,
                 code,
-                expiredAt: createDate(new TimeSpan(15, "m")),
+                expiredAt,
             },
         });
         return createdCode.code;
+    }
+
+    // Helper method to generate numeric codes
+    private generateNumericCode(length: number): string {
+        const bytes = crypto.randomBytes(length * 2);
+        let result = "";
+        for (let i = 0; i < bytes.length && result.length < length; i++) {
+            // Convert byte to a digit (0-9)
+            const digit = bytes[i] % 10;
+            result += digit.toString();
+        }
+        return result.slice(0, length);
     }
 
     async verifyCode(userId: string, code: string) {
@@ -29,12 +42,11 @@ export class EmailVerificationService {
                     userId,
                 },
             });
+            const now = new Date();
 
             if (!dbCode || dbCode.code !== code) return false;
-            if (!isWithinExpirationDate(dbCode.expiredAt)) {
-                await this.deleteAllEmailVerificationCodes(userId);
-                return false;
-            }
+            if (now > dbCode.expiredAt) return false;
+
             await this.deleteAllEmailVerificationCodes(userId);
             return true;
         });
