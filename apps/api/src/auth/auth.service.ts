@@ -18,6 +18,8 @@ import { SignUpDto } from "./dto/sign-up.dto";
 import { EmailVerificationService } from "src/email-verification/email-verification.service";
 import { NodemailService } from "src/nodemail/nodemail.service";
 import { PasswordResetService } from "src/password-reset/password-reset.service";
+import { ExecutionContextHost } from "@nestjs/core/helpers/execution-context-host";
+import { ExecutionContext } from "src/utils/helpers/execution-context";
 
 @Injectable()
 export class AuthService {
@@ -75,9 +77,11 @@ export class AuthService {
         }
 
         const code = await this.emailVerificationService.generateEmailVerificationCode(user.id);
-        this.nodeMailerService.sendVerifcationEmailCode(code, user.email).catch(error => {
-            this.logger.error(error);
-        });
+        ExecutionContext.waitUntil(
+            this.nodeMailerService.sendVerifcationEmailCode(code, user.email).catch(error => {
+                this.logger.error(error);
+            }),
+        );
 
         return {
             userId: user.id,
@@ -91,7 +95,7 @@ export class AuthService {
             throw new BadRequestException(authConstants.error.invalidCredentials);
         }
 
-        const accessToken = await this.generateToken({
+        const accessToken = this.generateToken({
             userId: user.id,
         });
 
@@ -143,7 +147,7 @@ export class AuthService {
             },
         });
 
-        const accessToken = await this.generateToken({
+        const accessToken = this.generateToken({
             userId: user.id,
         });
 
@@ -164,13 +168,20 @@ export class AuthService {
         const { resetUrl } = await this.passworddResetService.createPasswordResetToken(
             existingUser.id,
         );
-        this.nodeMailerService.sendPasswordResetEmail(resetUrl, email).catch(error => {
-            this.logger.error(error);
-        });
+        ExecutionContext.waitUntil(
+            this.nodeMailerService
+                .sendPasswordResetEmail(resetUrl, email)
+                .then(() => {
+                    this.logger.log("Password reset email sent successfully");
+                })
+                .catch(error => {
+                    this.logger.error("Failed to send password reset email", error);
+                }),
+        );
     }
 
-    async generateToken(jwtPayload: JwtPayload) {
-        const accessToken = await this.jwtService.signAsync(jwtPayload);
+    generateToken(jwtPayload: JwtPayload) {
+        const accessToken = this.jwtService.sign(jwtPayload);
         return accessToken;
     }
 
