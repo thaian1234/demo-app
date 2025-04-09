@@ -1,4 +1,4 @@
-import * as bcrypt from "bcrypt";
+import * as bcrypt from "bcryptjs";
 import {
     BadRequestException,
     Injectable,
@@ -18,7 +18,6 @@ import { SignUpDto } from "./dto/sign-up.dto";
 import { EmailVerificationService } from "src/email-verification/email-verification.service";
 import { NodemailService } from "src/nodemail/nodemail.service";
 import { PasswordResetService } from "src/password-reset/password-reset.service";
-import { ExecutionContextHost } from "@nestjs/core/helpers/execution-context-host";
 import { ExecutionContext } from "src/utils/helpers/execution-context";
 
 @Injectable()

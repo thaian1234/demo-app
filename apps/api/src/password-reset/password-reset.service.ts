@@ -2,7 +2,7 @@ import { BadRequestException, Injectable } from "@nestjs/common";
 import { PrismaService } from "src/prisma/prisma.service";
 
 import * as crypto from "crypto";
-import * as bcrypt from "bcrypt";
+import * as bcrypt from "bcryptjs";
 
 import { ConfigService } from "@nestjs/config";
 import { passwordResetConstants } from "./password-reset.constants";
