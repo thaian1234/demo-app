@@ -81,11 +81,19 @@ export function LoginForm({ className, ...props }: React.ComponentPropsWithoutRe
                         Sign in
                     </Button>
                 </div>
-                <div className="text-center text-sm">
-                    Don&apos;t have an account?{" "}
-                    <Link to={"/sign-up"} className="underline underline-offset-4">
-                        Sign up
-                    </Link>
+                <div className="text-center text-sm space-y-2">
+                    <div>
+                        Don&apos;t have an account?{" "}
+                        <Link to={"/sign-up"} className="underline underline-offset-4">
+                            Sign up
+                        </Link>
+                    </div>
+                    <div>
+                        Forgot your password?{" "}
+                        <Link to={"/reset-password"} className="underline underline-offset-4">
+                            Forgot?
+                        </Link>
+                    </div>
                 </div>
             </form>
         </Form>

@@ -13,6 +13,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { authApi } from "../api";
 import { authRequestSchema } from "../api/type";
+import { Link } from "react-router-dom";
 
 export function RequestResetPasswordForm({
     className,
@@ -63,6 +64,12 @@ export function RequestResetPasswordForm({
                     <Button type="submit" className="w-full" disabled={authMutation.isPending}>
                         Submit
                     </Button>
+                </div>
+                <div className="text-center text-sm">
+                    Have an account?{" "}
+                    <Link to={"/sign-in"} className="underline underline-offset-4">
+                        Sign in
+                    </Link>
                 </div>
             </form>
         </Form>
