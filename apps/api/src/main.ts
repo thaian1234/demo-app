@@ -36,6 +36,8 @@ async function bootstrap() {
     app.useGlobalPipes(
         new ValidationPipe({
             whitelist: true,
+            forbidNonWhitelisted: true,
+            transform: true,
         }),
     );
     app.useGlobalInterceptors(new ResponseInterceptor(reflector));

@@ -5,6 +5,8 @@ import {
     CallHandler,
     HttpException,
     HttpStatus,
+    BadRequestException,
+    InternalServerErrorException,
 } from "@nestjs/common";
 import { Reflector } from "@nestjs/core";
 import { Observable, throwError } from "rxjs";
@@ -38,12 +40,29 @@ export class ResponseInterceptor<T> implements NestInterceptor<T, Response<T>> {
                 ? exception.getStatus()
                 : HttpStatus.INTERNAL_SERVER_ERROR;
 
-        const message = status === 500 ? "Internal Server Error" : exception.message;
+        // Default message
+        let message =
+            exception instanceof InternalServerErrorException
+                ? "Internal Server Error"
+                : exception.message;
+        let errors = null;
+
+        // Handle validation errors (BadRequestException with validation details)
+        if (exception instanceof BadRequestException) {
+            const exceptionResponse = exception.getResponse() as any;
+
+            // Check if this is a validation error (has message array)
+            if (exceptionResponse.message && Array.isArray(exceptionResponse.message)) {
+                message = "Validation failed";
+                errors = exceptionResponse.message;
+            }
+        }
 
         response.status(status).json({
             success: false,
             statusCode: status,
             message: message,
+            errors: errors, // Include validation errors if present
         });
     }
 

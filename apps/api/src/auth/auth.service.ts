@@ -38,7 +38,6 @@ export class AuthService {
         const user = await this.userService.findUser({
             where: {
                 email,
-                emailVerified: true,
             },
         });
 

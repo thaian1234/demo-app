@@ -1,11 +1,14 @@
-import { IsEmail, IsNotEmpty, IsString, MinLength } from "class-validator";
+import { IsEmail, IsNotEmpty, IsString, Matches, MaxLength, MinLength } from "class-validator";
+import { REGEX } from "src/utils/helpers/regex";
 
-export class SignInDto {
+export declare class SignInDto {
     @IsEmail()
     @IsNotEmpty()
-    email!: string;
+    email: string;
 
     @IsString()
     @MinLength(8)
-    password!: string;
+    @MaxLength(32)
+    @Matches(REGEX.noSpaces, { message: "Password cannot contain spaces" })
+    password: string;
 }
