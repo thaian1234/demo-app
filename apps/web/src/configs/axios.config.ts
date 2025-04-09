@@ -51,7 +51,7 @@ client.interceptors.response.use(
             try {
                 const accessToken = localStorage.getItem(LOCAL_STORAGE.ACCESS_TOKEN);
                 if (!accessToken) {
-                    throw new Error("No access token found");
+                    return Promise.reject(err);
                 }
                 client.defaults.headers.common.Authorization = `Bearer ${accessToken}`;
                 return await client(originalConfig);
