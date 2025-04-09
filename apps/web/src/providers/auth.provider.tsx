@@ -1,7 +1,7 @@
 import { authApi } from "@/features/auth/api";
 import { User } from "@/types/common";
 import { HttpStatusCode } from "axios";
-import { createContext, use, useEffect, useState } from "react";
+import { createContext, use } from "react";
 import { Outlet, useLocation, Navigate } from "react-router-dom";
 import { LOCAL_STORAGE } from "@/configs/axios.config";
 
@@ -24,29 +24,12 @@ export default function AuthProvider({
     redirectTo = "/sign-in",
 }: AuthProviderProps) {
     const location = useLocation();
-    const { data, isLoading, isError, error, refetch } = authApi.query.useGetProfile();
-    const [isInitializing, setIsInitializing] = useState(true);
+    const token = localStorage.getItem(LOCAL_STORAGE.ACCESS_TOKEN);
+    const { data, isLoading, isError, error } = authApi.query.useGetProfile(!!token);
 
     const isSignedIn = !isError && !!data?.data;
 
-    useEffect(() => {
-        const token = localStorage.getItem(LOCAL_STORAGE.ACCESS_TOKEN);
-
-        if (!token && requireAuth) {
-            setIsInitializing(false);
-            return;
-        }
-
-        if (token && !data?.data && !isLoading) {
-            refetch().finally(() => {
-                setIsInitializing(false);
-            });
-        } else {
-            setIsInitializing(false);
-        }
-    }, [data, isLoading, refetch, requireAuth]);
-
-    if (isInitializing || isLoading) {
+    if (isLoading) {
         return <div>Loading...</div>;
     }
 

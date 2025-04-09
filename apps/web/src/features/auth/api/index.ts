@@ -20,12 +20,15 @@ const KEYS = {
 
 export const authApi = {
     query: {
-        useGetProfile() {
+        useGetProfile(isEnabled = true) {
             return useQuery({
                 queryKey: KEYS.profile(),
                 queryFn: () => {
                     return authService.getProfile();
                 },
+                staleTime: 5 * 60 * 1000,
+                retry: false,
+                enabled: isEnabled,
             });
         },
         useGetUserId() {
