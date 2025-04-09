@@ -1,7 +1,7 @@
 import { authApi } from "@/features/auth/api";
 import { User } from "@/types/common";
 import { HttpStatusCode } from "axios";
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, use, useEffect, useState } from "react";
 import { Outlet, useLocation, Navigate } from "react-router-dom";
 import { LOCAL_STORAGE } from "@/configs/axios.config";
 
@@ -73,7 +73,7 @@ export default function AuthProvider({
 }
 
 export function useAuth() {
-    const context = useContext(UserContext);
+    const context = use(UserContext);
     if (context === undefined) {
         throw new Error("useAuth must be used within an AuthProvider");
     }

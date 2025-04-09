@@ -27,19 +27,19 @@ const router = createBrowserRouter([
                         element: <AuthLayout />,
                         children: [
                             {
-                                element: <LoginPage />,
+                                Component: LoginPage,
                                 path: ROUTES.signIn,
                             },
                             {
-                                element: <SignUpPage />,
+                                Component: SignUpPage,
                                 path: ROUTES.signUp,
                             },
                             {
-                                element: <OtpPage />,
+                                Component: OtpPage,
                                 path: ROUTES.otpVerification,
                             },
                             {
-                                element: <ResetPasswordPage />,
+                                Component: ResetPasswordPage,
                                 path: ROUTES.resetPassword,
                             },
                         ],
@@ -51,8 +51,9 @@ const router = createBrowserRouter([
                 element: <AuthProvider requireAuth />,
                 children: [
                     {
-                        element: <HomePage />,
                         path: ROUTES.home,
+                        Component: HomePage,
+                        index: true,
                     },
                 ],
             },
