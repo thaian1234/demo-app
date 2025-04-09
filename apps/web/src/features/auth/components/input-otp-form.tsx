@@ -16,6 +16,7 @@ import { authRequestSchema } from "../api/type";
 import { authApi } from "../api";
 import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
+import { ROUTES } from "@/configs/routes.config";
 
 export function InputOTPForm() {
     const navigate = useNavigate();
@@ -31,7 +32,7 @@ export function InputOTPForm() {
     useEffect(() => {
         if (!userId) {
             console.log("userId is undefined, redirecting to sign-up");
-            navigate("/sign-up", {
+            navigate(ROUTES.signUp, {
                 replace: true,
             });
         }
@@ -39,7 +40,7 @@ export function InputOTPForm() {
 
     const onSubmit = form.handleSubmit(data => {
         if (!userId) {
-            navigate("/sign-up", {
+            navigate(ROUTES.signUp, {
                 replace: true,
             });
             return;

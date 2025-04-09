@@ -11,9 +11,10 @@ import {
     FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Link } from "react-router-dom";
+import { href, Link } from "react-router-dom";
 import { authApi } from "../api";
 import { authRequestSchema } from "../api/type";
+import { ROUTES } from "@/configs/routes.config";
 
 export function LoginForm({ className, ...props }: React.ComponentPropsWithoutRef<"form">) {
     const form = useForm({
@@ -84,14 +85,18 @@ export function LoginForm({ className, ...props }: React.ComponentPropsWithoutRe
                 <div className="text-center text-sm space-y-2">
                     <div>
                         Don&apos;t have an account?{" "}
-                        <Link to={"/sign-up"} className="underline underline-offset-4">
+                        <Link to={href(ROUTES.signUp)} className="underline underline-offset-4">
                             Sign up
                         </Link>
                     </div>
                     <div>
-                        Forgot your password?{" "}
-                        <Link to={"/reset-password"} className="underline underline-offset-4">
-                            Forgot?
+                        <Link
+                            to={href(ROUTES.resetPassword, {
+                                token: "",
+                            })}
+                            className="underline underline-offset-4"
+                        >
+                            Forgot your password?
                         </Link>
                     </div>
                 </div>

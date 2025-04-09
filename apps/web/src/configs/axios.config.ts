@@ -7,7 +7,7 @@ import axios, {
 
 // import AuthService from "@/features/auth/apis/service";
 
-const LOCAL_STORAGE = {
+export const LOCAL_STORAGE = {
     ACCESS_TOKEN: "access_token",
 } as const;
 

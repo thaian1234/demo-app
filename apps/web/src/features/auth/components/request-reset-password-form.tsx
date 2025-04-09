@@ -14,6 +14,7 @@ import { Input } from "@/components/ui/input";
 import { authApi } from "../api";
 import { authRequestSchema } from "../api/type";
 import { Link } from "react-router-dom";
+import { ROUTES } from "@/configs/routes.config";
 
 export function RequestResetPasswordForm({
     className,
@@ -67,7 +68,7 @@ export function RequestResetPasswordForm({
                 </div>
                 <div className="text-center text-sm">
                     Have an account?{" "}
-                    <Link to={"/sign-in"} className="underline underline-offset-4">
+                    <Link to={ROUTES.signIn} className="underline underline-offset-4">
                         Sign in
                     </Link>
                 </div>

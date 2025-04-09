@@ -9,6 +9,8 @@ import {
     VerifyEmailRequest,
     VerifyResetPasswordRequest,
 } from "./type";
+import { LOCAL_STORAGE } from "@/configs/axios.config";
+import { ROUTES } from "@/configs/routes.config";
 
 const baseKey = "auth";
 const KEYS = {
@@ -45,13 +47,13 @@ export const authApi = {
                 },
                 onSuccess: ({ data, message }) => {
                     toast.success(message);
-                    localStorage.setItem("access_token", data.accessToken);
-                    navigate("/");
+                    localStorage.setItem(LOCAL_STORAGE.ACCESS_TOKEN, data.accessToken);
+                    navigate(ROUTES.home);
                 },
                 onError: error => {
                     toast.error(error.message);
-                    if (localStorage.getItem("access_token")) {
-                        localStorage.removeItem("access_token");
+                    if (localStorage.getItem(LOCAL_STORAGE.ACCESS_TOKEN)) {
+                        localStorage.removeItem(LOCAL_STORAGE.ACCESS_TOKEN);
                     }
                 },
             });
@@ -68,12 +70,12 @@ export const authApi = {
                 onSuccess: ({ data, message }) => {
                     toast.success(message);
                     queryClient.setQueryData(KEYS.userId(), data.userId);
-                    navigate("/otp-verification");
+                    navigate(ROUTES.otpVerification);
                 },
                 onError: error => {
                     toast.error(error.message);
-                    if (localStorage.getItem("access_token")) {
-                        localStorage.removeItem("access_token");
+                    if (localStorage.getItem(LOCAL_STORAGE.ACCESS_TOKEN)) {
+                        localStorage.removeItem(LOCAL_STORAGE.ACCESS_TOKEN);
                     }
                 },
             });
@@ -86,9 +88,9 @@ export const authApi = {
                 mutationFn: () => authService.signout(),
                 onSuccess: () => {
                     toast.success("Sign out successfully");
-                    localStorage.removeItem("access_token");
+                    localStorage.removeItem(LOCAL_STORAGE.ACCESS_TOKEN);
                     queryClient.clear();
-                    navigate("/sign-in");
+                    navigate(ROUTES.signIn);
                 },
                 onError: error => {
                     toast.error(error.message);
@@ -97,15 +99,13 @@ export const authApi = {
         },
         useVerifyEmail() {
             const navigate = useNavigate();
-            const queryClient = useQueryClient();
 
             return useMutation({
                 mutationFn: (input: VerifyEmailRequest) => authService.verifyEmail(input),
                 onSuccess: ({ data, message }) => {
                     toast.success(message);
-                    queryClient.clear();
-                    localStorage.setItem("access_token", data.accessToken);
-                    navigate("/");
+                    localStorage.setItem(LOCAL_STORAGE.ACCESS_TOKEN, data.accessToken);
+                    navigate(ROUTES.home);
                 },
                 onError: error => {
                     toast.error(error.message);
@@ -134,7 +134,7 @@ export const authApi = {
                 onSuccess: ({ message }) => {
                     toast.success(message);
                     queryClient.clear();
-                    navigate("/sign-in");
+                    navigate(ROUTES.signIn);
                 },
                 onError: error => {
                     toast.error(error.message);

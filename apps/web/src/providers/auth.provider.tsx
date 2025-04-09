@@ -1,8 +1,9 @@
 import { authApi } from "@/features/auth/api";
 import { User } from "@/types/common";
 import { HttpStatusCode } from "axios";
-import { createContext, useContext } from "react";
-import { Outlet, useNavigate } from "react-router";
+import { createContext, useContext, useEffect, useState } from "react";
+import { Outlet, useLocation, Navigate } from "react-router-dom";
+import { LOCAL_STORAGE } from "@/configs/axios.config";
 
 interface AuthContextType {
     user: User | undefined;
@@ -11,22 +12,50 @@ interface AuthContextType {
     isSignedIn: boolean;
 }
 
+interface AuthProviderProps {
+    requireAuth?: boolean;
+    redirectTo?: string;
+}
+
 const UserContext = createContext<AuthContextType | undefined>(undefined);
 
-export default function AuthProvider() {
-    const navigate = useNavigate();
-    const { data, isLoading, isError, error } = authApi.query.useGetProfile();
-    const isSignedIn = !isError;
+export default function AuthProvider({
+    requireAuth = true,
+    redirectTo = "/sign-in",
+}: AuthProviderProps) {
+    const location = useLocation();
+    const { data, isLoading, isError, error, refetch } = authApi.query.useGetProfile();
+    const [isInitializing, setIsInitializing] = useState(true);
 
-    if (isLoading) {
+    const isSignedIn = !isError && !!data?.data;
+
+    useEffect(() => {
+        const token = localStorage.getItem(LOCAL_STORAGE.ACCESS_TOKEN);
+
+        if (!token && requireAuth) {
+            setIsInitializing(false);
+            return;
+        }
+
+        if (token && !data?.data && !isLoading) {
+            refetch().finally(() => {
+                setIsInitializing(false);
+            });
+        } else {
+            setIsInitializing(false);
+        }
+    }, [data, isLoading, refetch, requireAuth]);
+
+    if (isInitializing || isLoading) {
         return <div>Loading...</div>;
     }
 
-    if (isError || data?.statusCode === HttpStatusCode.Unauthorized) {
-        navigate("/sign-in", {
-            replace: true,
-        });
-        return;
+    if (requireAuth && (!isSignedIn || data?.statusCode === HttpStatusCode.Unauthorized)) {
+        return <Navigate to={redirectTo} state={{ from: location }} replace />;
+    }
+
+    if (!requireAuth && isSignedIn) {
+        return <Navigate to="/" replace />;
     }
 
     return (
@@ -46,7 +75,7 @@ export default function AuthProvider() {
 export function useAuth() {
     const context = useContext(UserContext);
     if (context === undefined) {
-        throw new Error("useUser must be used within a UserProvider");
+        throw new Error("useAuth must be used within an AuthProvider");
     }
     return context;
 }

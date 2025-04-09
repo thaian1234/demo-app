@@ -14,38 +14,45 @@ import HomePage from "./pages/home.page.tsx";
 import AuthLayout from "./layouts/auth.layout.tsx";
 import OtpPage from "./pages/otp.page.tsx";
 import ResetPasswordPage from "./pages/reset-password.page.tsx";
+import { ROUTES } from "./configs/routes.config.ts";
 
 const router = createBrowserRouter([
     {
         element: <RootLayout />,
         children: [
             {
-                element: <AuthLayout />,
+                element: <AuthProvider requireAuth={false} />,
                 children: [
                     {
-                        element: <LoginPage />,
-                        path: "/sign-in",
-                    },
-                    {
-                        element: <SignUpPage />,
-                        path: "/sign-up",
-                    },
-                    {
-                        element: <OtpPage />,
-                        path: "/otp-verification",
-                    },
-                    {
-                        element: <ResetPasswordPage />,
-                        path: "/reset-password/:token?",
+                        element: <AuthLayout />,
+                        children: [
+                            {
+                                element: <LoginPage />,
+                                path: ROUTES.signIn,
+                            },
+                            {
+                                element: <SignUpPage />,
+                                path: ROUTES.signUp,
+                            },
+                            {
+                                element: <OtpPage />,
+                                path: ROUTES.otpVerification,
+                            },
+                            {
+                                element: <ResetPasswordPage />,
+                                path: ROUTES.resetPassword,
+                            },
+                        ],
                     },
                 ],
             },
+
             {
-                element: <AuthProvider />,
+                element: <AuthProvider requireAuth />,
                 children: [
                     {
                         element: <HomePage />,
-                        path: "/",
+                        path: ROUTES.home,
                     },
                 ],
             },
