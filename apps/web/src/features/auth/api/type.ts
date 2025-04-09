@@ -1,22 +1,47 @@
 import { User } from "@/types/common";
 import { z } from "zod";
 
+const passwordValidation = {
+    noSpaces: /^[^\s]+$/,
+};
+const usernameValidation = {
+    startsWithLetter: /^[a-zA-Z]/,
+    validCharacters: /^[a-zA-Z0-9_]+$/, // Only letters, numbers, underscores allowed
+    endsWithLetterOrNumber: /[a-zA-Z0-9]$/, // Must end with letter or number
+    noSpaces: /^[^\s]+$/,
+};
+
+const usernameSchema = z
+    .string()
+    .min(4, "Must be at least 4 characters")
+    .max(16, "Must be at most 16 characters")
+    .regex(usernameValidation.startsWithLetter, "Must start with a letter")
+    .regex(usernameValidation.endsWithLetterOrNumber, "Must end with a letter or number")
+    .regex(usernameValidation.validCharacters, "Can only contain letters, numbers, and underscores")
+    .regex(usernameValidation.noSpaces, "Username cannot contain spaces");
+
+const passwordSchema = z
+    .string()
+    .min(8, "Must be at least 8 characters")
+    .max(32, "Must be at most 32 characters")
+    .regex(passwordValidation.noSpaces, "Password cannot contain spaces");
+
 // Schemas
 export const authRequestSchema = {
     signin: z.object({
         email: z.string().email(),
-        password: z.string().min(8).max(32),
+        password: passwordSchema,
     }),
     signup: z.object({
         email: z.string().email(),
-        username: z.string().min(4),
-        password: z.string().min(8).max(32),
+        username: usernameSchema,
+        password: passwordSchema,
     }),
     requestResetPassword: z.object({
         email: z.string().email(),
     }),
     verifyResetPassword: z.object({
-        newPassword: z.string().min(8).max(32),
+        newPassword: passwordSchema,
         token: z.string().nonempty(),
     }),
     verifyEmail: z.object({
