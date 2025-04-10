@@ -25,10 +25,7 @@ export class ResponseInterceptor<T> implements NestInterceptor<T, Response<T>> {
     constructor(private readonly reflector: Reflector) {}
 
     intercept(context: ExecutionContext, next: CallHandler): Observable<Response<T>> {
-        return next.handle().pipe(
-            map((res: unknown) => this.responseHandler(res, context)),
-            catchError((err: HttpException) => throwError(() => this.errorHandler(err, context))),
-        );
+        return next.handle().pipe(map((res: unknown) => this.responseHandler(res, context)));
     }
 
     errorHandler(exception: HttpException, context: ExecutionContext) {

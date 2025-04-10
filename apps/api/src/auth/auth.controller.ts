@@ -92,6 +92,9 @@ export class AuthController {
     @ResponseMessage(authConstants.success.passwordResetSuccess)
     @HttpCode(HttpStatus.OK)
     verifyPasswordResetToken(@Body() passwordResetTokenDto: VerifyResetPasswordDto) {
+        console.log({
+            passwordResetTokenDto,
+        });
         return this.passwordResetService.resetPassword(
             passwordResetTokenDto.token,
             passwordResetTokenDto.newPassword,

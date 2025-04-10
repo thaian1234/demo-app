@@ -6,6 +6,7 @@ import { ConfigService } from "@nestjs/config";
 import { ResponseInterceptor } from "./utils/interceptors/response.interceptor";
 import { Reflector } from "@nestjs/core";
 import { DocumentBuilder, SwaggerModule } from "@nestjs/swagger";
+import { GlobalExceptionFilter } from "./utils/exceptions/global-exception.filter";
 
 async function bootstrap() {
     const app = await NestFactory.create(AppModule);
@@ -37,10 +38,13 @@ async function bootstrap() {
         new ValidationPipe({
             whitelist: true,
             forbidNonWhitelisted: true,
+            skipUndefinedProperties: false,
+            skipMissingProperties: false,
             transform: true,
         }),
     );
     app.useGlobalInterceptors(new ResponseInterceptor(reflector));
+    app.useGlobalFilters(new GlobalExceptionFilter());
 
     await app.listen(port);
     Logger.log(`Application is running on: http://localhost:${port}/api`);
