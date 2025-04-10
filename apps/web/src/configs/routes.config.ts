@@ -4,5 +4,4 @@ export const ROUTES = {
     signUp: "/sign-up",
     otpVerification: "/otp-verification",
     resetPassword: "/reset-password/:token?",
-    test: "/abc/:xyzw",
 } as const;

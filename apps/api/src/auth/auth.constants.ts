@@ -21,6 +21,7 @@ const successConstants = {
     emailVerified: "Email verified successfully",
     passwordResetEmailSent: "Password reset email sent successfully",
     passwordResetSuccess: "Password reset successful",
+    emailVerificationCodeSent: "Please check your email for verification code",
 };
 
 export const authConstants = {

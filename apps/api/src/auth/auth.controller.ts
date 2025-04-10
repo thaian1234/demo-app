@@ -38,7 +38,7 @@ export class AuthController {
     ) {}
 
     @Post("signup")
-    @ResponseMessage(authConstants.success.userCreated)
+    @ResponseMessage(authConstants.success.emailVerificationCodeSent)
     signup(@Body() signUpDto: SignUpDto) {
         return this.authService.signUp(signUpDto);
     }

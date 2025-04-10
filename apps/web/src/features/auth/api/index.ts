@@ -141,6 +141,7 @@ export const authApi = {
                 },
                 onError: error => {
                     toast.error(error.message);
+                    navigate(ROUTES.signIn);
                 },
             });
         },

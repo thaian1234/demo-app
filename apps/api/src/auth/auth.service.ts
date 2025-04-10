@@ -77,7 +77,7 @@ export class AuthService {
         const code = await this.emailVerificationService.generateEmailVerificationCode(user.id);
         ExecutionContext.waitUntil(
             this.nodeMailerService.sendVerifcationEmailCode(code, user.email).catch(error => {
-                this.logger.error(error);
+                this.logger.error(`Failed to send verification email to ${user.email}`, error);
             }),
         );
 
